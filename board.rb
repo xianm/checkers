@@ -21,22 +21,25 @@ class Board
   end
 
   def to_s
-    buffer = ""
+    buffer = "  | "
+    buffer += (0...8).to_a.join(" ")
+    buffer += "\n--+-----------------\n"
 
     @field.each_with_index do |row, y|
+      buffer += "#{y} | "
       row.each_with_index do |cell, x|
         str = ""
 
         if cell.nil?
           str = "  "
         else
-          str = cell.color == :red ? "◉ ".red : "◉ "
+          str = cell.color == :red ? "◉ ".red : "◉ ".light_white
         end
         
         if (x % 2 != y % 2)
-          str = str.on_white
+          str = str.on_green
         else
-          str = str.on_black
+          str = str.on_light_yellow
         end
         
         buffer += str
