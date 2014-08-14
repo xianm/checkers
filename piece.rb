@@ -2,7 +2,7 @@ class Piece
   FORWARD = [[1, 1], [-1, 1]]
   BACKWARD = [[1, -1], [-1, -1]]
 
-  attr_reader :color
+  attr_reader :color, :pos, :color, :promoted
 
   def initialize(board, pos, color, promoted = false)
     @board, @pos, @color, @promoted = board, pos, color, promoted
@@ -16,16 +16,32 @@ class Piece
     true
   end
 
-  def perform_moves!(move_sequence)
-    if move_sequence.length > 1
-      move_sequences.each do |move|
-        return false unless perform_jump(move)
+  def perform_moves(move_seq)
+    raise InvalidMoveError unless valid_move_seq?(move_seq)
+    perform_moves!(move_seq)
+  end
+
+  def valid_move_seq?(move_seq)
+    board_copy = @board.dup
+    piece_copy = board_copy[@pos]
+
+    begin
+      piece_copy.perform_moves!(move_seq)
+      true
+    rescue InvalidMoveError
+      false
+    end
+  end
+
+  def perform_moves!(move_seq)
+    if move_seq.length > 1
+      move_seq.each do |move|
+        raise InvalidMoveError unless perform_jump(move)
       end
-      return true
     else
-      move = move_sequence.first
+      move = move_seq.first
       performed_slide = perform_slide(move)
-      performed_slide unless perform_jump(move)
+      raise InvalidMoveError unless perform_jump(move)
     end
   end
 
@@ -41,14 +57,14 @@ class Piece
   def perform_jump(to_pos)
     diff = diff(to_pos, @pos)
 
-    jumped_x = (diff.x < 0) ? @pos.x - 1 : @pos.y + 1
+    jumped_x = (diff.x < 0) ? @pos.x - 1 : @pos.x + 1
     jumped_y = (diff.y < 0) ? @pos.y - 1 : @pos.y + 1
     jumped_pos = [jumped_x, jumped_y]
 
     jumped = @board[jumped_pos]
     target = @board[to_pos]
 
-    return false unless jump_diffs.include?([x_diff, y_diff])
+    return false unless jump_diffs.include?([diff.x, diff.y])
     return false unless target.nil? && !jumped.nil?
     return false unless jumped.color != @color
 
@@ -62,7 +78,7 @@ class Piece
   
   def move_diffs
     return FORWARD + BACKWARD if @promoted
-    @color == :white ? FORWARD : BACKWARD
+    @color == :red ? FORWARD : BACKWARD
   end
 
   def jump_diffs
@@ -71,5 +87,11 @@ class Piece
 
   def diff(a, b)
     [a.x - b.x, a.y - b.y]
+  end
+end
+
+class InvalidMoveError < StandardError
+  def message
+    "Illegal move sequence"
   end
 end

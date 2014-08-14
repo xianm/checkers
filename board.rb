@@ -20,6 +20,18 @@ class Board
     @field[y][x] = value
   end
 
+  def pieces
+    @field.flatten.compact
+  end
+
+  def dup
+    board_copy = Board.new(false)
+    pieces.each do |piece|
+      board_copy[piece.pos] = Piece.new(board_copy, piece.pos, piece.color)
+    end
+    board_copy
+  end
+
   def to_s
     buffer = "  | "
     buffer += (0...8).to_a.join(" ")
@@ -33,7 +45,7 @@ class Board
         if cell.nil?
           str = "  "
         else
-          str = cell.color == :red ? "◉ ".red : "◉ ".light_white
+          str = cell.color == :red ? "🔴 " : "🔘 "
         end
         
         if (x % 2 != y % 2)
@@ -51,11 +63,17 @@ class Board
   end
 
   def reset_field
+    self[[1, 0]] = Piece.new(self, [1, 0], :red)
+    self[[2, 1]] = Piece.new(self, [2, 1], :white)
+    self[[4, 3]] = Piece.new(self, [4, 3], :white)
+  end
+
+  def reset_field_old
     3.times do |y|
       x = y.even? ? 1 : 0
       4.times do
-        self[[x, y]] = Piece.new(self, [x, y], :white)
-        self[[x - 1, 7 - y]] = Piece.new(self, [x - 1, 7 - y], :red)
+        self[[x, y]] = Piece.new(self, [x, y], :red)
+        self[[x - 1, 7 - y]] = Piece.new(self, [x - 1, 7 - y], :white)
         x += 2
       end
     end
