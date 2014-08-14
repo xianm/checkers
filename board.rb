@@ -1,5 +1,4 @@
 require 'colorize'
-require_relative 'patches'
 require_relative 'piece'
 
 class Board
@@ -24,6 +23,10 @@ class Board
     @field.flatten.compact
   end
 
+  def pieces_by_color(color)
+    pieces.select { |piece| piece.color == color }
+  end
+
   def dup
     board_copy = Board.new(false)
     pieces.each do |piece|
@@ -34,11 +37,11 @@ class Board
 
   def to_s
     buffer = "  | "
-    buffer += (0...8).to_a.join(" ")
+    buffer += ('a'..'h').to_a.join(" ")
     buffer += "\n--+-----------------\n"
 
     @field.each_with_index do |row, y|
-      buffer += "#{y} | "
+      buffer += "#{y + 1} | "
       row.each_with_index do |cell, x|
         str = ""
 
@@ -63,12 +66,6 @@ class Board
   end
 
   def reset_field
-    self[[1, 0]] = Piece.new(self, [1, 0], :red)
-    self[[2, 1]] = Piece.new(self, [2, 1], :white)
-    self[[4, 3]] = Piece.new(self, [4, 3], :white)
-  end
-
-  def reset_field_old
     3.times do |y|
       x = y.even? ? 1 : 0
       4.times do
