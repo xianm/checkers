@@ -62,7 +62,7 @@ class Piece
   
   def move_diffs
     return FORWARD + BACKWARD if @promoted
-    @color == :red ? FORWARD : BACKWARD
+    @color == :white ? FORWARD : BACKWARD
   end
 
   def jump_diffs
