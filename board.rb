@@ -81,7 +81,7 @@ class Board
   end
 
   def try_move_seq(mover_color, move_seq)
-    raise InvalidMoveError if move_seq.count < 1
+    raise InvalidMoveError if move_seq.count < 2
 
     piece = self[move_seq.first]
 
