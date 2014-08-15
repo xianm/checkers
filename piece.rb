@@ -34,14 +34,22 @@ class Piece
   end
 
   def perform_moves!(move_seq)
-    if move_seq.length > 1
-      move_seq.each do |move|
-        raise InvalidMoveError unless perform_jump(move)
+    jumped = false
+
+    move_seq.each do |move|
+      if move_seq.length == 1
+        break if perform_slide(move)
       end
-    else
-      move = move_seq.first
-      performed_slide = perform_slide(move)
-      raise InvalidMoveError unless (performed_slide || perform_jump(move))
+
+      raise InvalidMoveError unless perform_jump(move)
+      jumped = true
+    end
+
+    if jumped
+      raise InvalidMoveError if jump_diffs.any? do |diff|
+        jump_pos = [@pos.x + diff.x, @pos.y + diff.y]
+        can_jump?(jump_pos)
+      end
     end
   end
 
