@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+require 'yaml'
 require_relative 'patches'
 require_relative 'errors'
 require_relative 'board'
@@ -8,13 +9,37 @@ require_relative 'human_player'
 class Checkers
   attr_reader :board
 
-  def initialize(white_player, red_player)
+  def initialize(white_player = nil, red_player = nil)
+    white_player ||= HumanPlayer.new("White", :white)
+    red_player ||= HumanPlayer.new("Red", :red)
+
     @board = Board.new
     @players = {
       :white => white_player,
       :red => red_player
     }
     @active_player_color = :white
+  end
+
+  def self.load_from_file(file)
+    ARGV.clear
+    YAML::load_file(file)
+  end
+
+  def save_game(file_name)
+    File.open(file_name, "w") do |file|
+      file << self.to_yaml 
+    end
+  end
+
+  def save_prompt
+    print "\n\nWould you like to save the game? (y/n): "
+    response = gets.chomp.downcase
+
+    if response == 'y'
+      file_name = Time.now.strftime("checkers-%F-%H%M.game")
+      save_game(file_name)
+    end
   end
 
   def play
@@ -27,6 +52,7 @@ class Checkers
         puts error.message
         retry
       rescue Interrupt
+        save_prompt
         exit
       end
 
@@ -79,8 +105,6 @@ class Checkers
 end
 
 if __FILE__ == $PROGRAM_NAME
-  white_player = HumanPlayer.new("White", :white)
-  red_player = HumanPlayer.new("Red", :red)
-  game = Checkers.new(white_player, red_player)
+  game = ARGV.empty? ? Checkers.new : Checkers.load_from_file(ARGV[0])
   game.play
 end
