@@ -10,8 +10,11 @@ class Checkers
 
   def initialize(white_player, red_player)
     @board = Board.new
-    @players = [white_player, red_player]
-    @active_player = @players[0]
+    @players = {
+      :white => white_player,
+      :red => red_player
+    }
+    @active_player = :white
   end
 
   def play
@@ -41,7 +44,7 @@ class Checkers
 
   def winner
     return nil unless game_over?
-    @board.pieces_by_color?(:white).empty? ? :red : :white
+    @board.pieces_by_color(:white).empty? ? @players[:red] : @players[:white]
   end
 
   def render
@@ -49,15 +52,19 @@ class Checkers
   end
 
   def get_move_seq
-    @active_player.get_move_seq
+    active_player.get_move_seq
   end
 
   def handle_move_seq(move_seq)
-    @board.try_move_seq(@active_player.color, move_seq)
+    @board.try_move_seq(active_player.color, move_seq)
+  end
+
+  def active_player
+    @players[@active_player]
   end
 
   def switch_turns
-    @active_player = (@active_player == @players[0]) ? @players[1] : @players[0]
+    @active_player = (@active_player == :white) ? :red : :white
   end
 end
 
