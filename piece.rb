@@ -41,7 +41,7 @@ class Piece
     else
       move = move_seq.first
       performed_slide = perform_slide(move)
-      raise InvalidMoveError unless perform_jump(move)
+      raise InvalidMoveError unless (performed_slide || perform_jump(move))
     end
   end
 

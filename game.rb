@@ -19,7 +19,8 @@ class Checkers
 
       begin
         handle_move_seq(get_move_seq)
-      rescue InvalidMoveError
+      rescue InvalidMoveError => error
+        puts error.message
         retry
       rescue Interrupt
         puts "Exiting..."
@@ -50,8 +51,8 @@ class Checkers
     @active_player.get_move_seq
   end
 
-  def handle_move_seq(move)
-
+  def handle_move_seq(move_seq)
+    @board.try_move_seq(@active_player.color, move_seq)
   end
 
   def switch_turns
