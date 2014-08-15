@@ -14,7 +14,7 @@ class Checkers
       :white => white_player,
       :red => red_player
     }
-    @active_player = :white
+    @active_player_color = :white
   end
 
   def play
@@ -49,12 +49,12 @@ class Checkers
 
   def white_has_won?
     @board.pieces_by_color(:red).empty? ||
-      (@active_player == :red && @board.player_is_blocked?(:red))
+      (@active_player_color == :red && @board.player_is_blocked?(:red))
   end
 
   def red_has_won?
     @board.pieces_by_color(:white).empty? ||
-      (@active_player == :white && @board.player_is_blocked?(:white))
+      (@active_player_color == :white && @board.player_is_blocked?(:white))
   end
 
   def render
@@ -70,11 +70,11 @@ class Checkers
   end
 
   def active_player
-    @players[@active_player]
+    @players[@active_player_color]
   end
 
   def switch_turns
-    @active_player = (@active_player == :white) ? :red : :white
+    @active_player_color = (@active_player_color == :white) ? :red : :white
   end
 end
 
