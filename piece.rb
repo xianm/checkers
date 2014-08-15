@@ -2,7 +2,7 @@ class Piece
   FORWARD = [[1, 1], [-1, 1]]
   BACKWARD = [[1, -1], [-1, -1]]
 
-  attr_reader :color, :pos
+  attr_reader :color, :pos, :promoted
 
   def initialize(board, pos, color, promoted = false)
     @board, @pos, @color, @promoted = board, pos, color, promoted
