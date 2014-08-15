@@ -2,7 +2,7 @@ class Piece
   FORWARD = [[1, 1], [-1, 1]]
   BACKWARD = [[1, -1], [-1, -1]]
 
-  attr_reader :color, :pos, :color, :promoted
+  attr_reader :color, :pos
 
   def initialize(board, pos, color, promoted = false)
     @board, @pos, @color, @promoted = board, pos, color, promoted
@@ -12,7 +12,7 @@ class Piece
     @board[to_pos] = self
     @board[@pos] = nil
     @pos = to_pos
-    @promoted = promote?
+    @promoted = true if promote?
     true
   end
 
@@ -73,7 +73,7 @@ class Piece
   end
 
   def promote?
-    !@promoted && (@pos[1] == 0 || @pos[1] == 7)
+    !@promoted && (@pos.y == 0 || @pos.y == 7)
   end
   
   def move_diffs
@@ -87,11 +87,5 @@ class Piece
 
   def diff(a, b)
     [a.x - b.x, a.y - b.y]
-  end
-end
-
-class InvalidMoveError < StandardError
-  def message
-    "Illegal move sequence"
   end
 end

@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require_relative 'patches'
+require_relative 'errors'
 require_relative 'board'
 require_relative 'human_player'
 

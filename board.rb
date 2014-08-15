@@ -87,15 +87,3 @@ class Board
     piece.perform_moves(move_seq[1..-1])
   end
 end
-
-class EmptyMoveError < InvalidMoveError
-  def message
-    "You cannot move an empty piece."
-  end
-end
-
-class PermissionError < InvalidMoveError
-  def message
-    "You cannot move the opposing player's piece."
-  end
-end
