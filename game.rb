@@ -27,7 +27,6 @@ class Checkers
         puts error.message
         retry
       rescue Interrupt
-        puts "Exiting..."
         exit
       end
 
@@ -39,12 +38,23 @@ class Checkers
   end
 
   def game_over?
-    @board.pieces_by_color(:white).empty? || @board.pieces_by_color(:red).empty?
+    winner
   end
 
   def winner
-    return nil unless game_over?
-    @board.pieces_by_color(:white).empty? ? @players[:red] : @players[:white]
+    return @players[:white] if white_has_won?
+    return @players[:red] if red_has_won?
+    nil
+  end
+
+  def white_has_won?
+    @board.pieces_by_color(:red).empty? ||
+      (@active_player == :red && @board.player_is_blocked?(:red))
+  end
+
+  def red_has_won?
+    @board.pieces_by_color(:white).empty? ||
+      (@active_player == :white && @board.player_is_blocked?(:white))
   end
 
   def render

@@ -46,30 +46,42 @@ class Piece
   end
 
   def perform_slide(to_pos)
-    diff = diff(to_pos, @pos)
-
-    return false unless @board[to_pos].nil? 
-    return false unless move_diffs.include?([diff.x, diff.y])
-
+    return false unless can_slide?(to_pos)
     move(to_pos)
   end
 
   def perform_jump(to_pos)
+    jumped_pos = []
+    return false unless can_jump?(to_pos, jumped_pos)
+    @board[jumped_pos] = nil
+    move(to_pos)
+  end
+
+  def can_slide?(to_pos)
+    diff = diff(to_pos, @pos)
+    @board[to_pos].nil? && move_diffs.include?([diff.x, diff.y])
+  end
+
+  def can_jump?(to_pos, jumped_pos = [])
     diff = diff(to_pos, @pos)
 
     jumped_x = (diff.x < 0) ? @pos.x - 1 : @pos.x + 1
     jumped_y = (diff.y < 0) ? @pos.y - 1 : @pos.y + 1
-    jumped_pos = [jumped_x, jumped_y]
+    jumped_pos  << jumped_x << jumped_y
+
+    return false unless to_pos.all? { |i| i.between?(0, 7) }
 
     jumped = @board[jumped_pos]
     target = @board[to_pos]
 
-    return false unless jump_diffs.include?([diff.x, diff.y])
-    return false unless target.nil? && !jumped.nil?
-    return false unless jumped.color != @color
+    jump_diffs.include?([diff.x, diff.y]) && target.nil? &&
+      !jumped.nil? && jumped.color != @color
+  end
 
-    @board[jumped_pos] = nil
-    move(to_pos)
+  def blocked?
+    has_slide_move = move_diffs.any? { |d| can_slide?([@pos.x + d.x, @pos.y + d.y]) }
+    has_jump_move = jump_diffs.any? { |d| can_jump?([@pos.x + d.x, @pos.y + d.y]) }
+    !(has_slide_move || has_jump_move)
   end
 
   def promote?

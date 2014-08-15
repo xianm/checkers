@@ -1,12 +1,12 @@
 class InvalidMoveError < StandardError
   def message
-    "Illegal move sequence"
+    "Illegal move sequence."
   end
 end
 
 class EmptyMoveError < InvalidMoveError
   def message
-    "You cannot move an empty piece."
+    "There is no piece to move there."
   end
 end
 

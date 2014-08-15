@@ -27,6 +27,10 @@ class Board
     pieces.select { |piece| piece.color == color }
   end
 
+  def player_is_blocked?(color)
+    pieces_by_color(color).all? { |piece| piece.blocked? }
+  end
+
   def dup
     board_copy = Board.new(false)
     pieces.each do |piece|
@@ -66,6 +70,13 @@ class Board
   end
 
   def reset_field
+    self[[1,0]] = Piece.new(self, [1,0], :red)
+    self[[0,1]] = Piece.new(self, [0,1], :white)
+    self[[2,1]] = Piece.new(self, [2,1], :white)
+    self[[3,2]] = Piece.new(self, [3,2], :white)
+  end
+
+  def reset_field_
     3.times do |y|
       x = y.even? ? 1 : 0
       4.times do
