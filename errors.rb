@@ -15,3 +15,9 @@ class PermissionError < InvalidMoveError
     "You cannot move the opposing player's piece."
   end
 end
+
+class InvalidInputError < StandardError
+  def message
+    "Invalid input, try again."
+  end
+end

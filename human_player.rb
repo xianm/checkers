@@ -26,9 +26,3 @@ class HumanPlayer
     [move.x.ord - 'a'.ord, move.y.to_i - 1]
   end
 end
-
-class InvalidInputError < StandardError
-  def message
-    "Invalid input, try again."
-  end
-end
