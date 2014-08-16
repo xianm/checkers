@@ -8,6 +8,10 @@ class Piece
     @board, @pos, @color, @promoted = board, pos, color, promoted
   end
 
+  def to_s
+    @promoted ? "♛" : "◉"
+  end
+
   def move(to_pos)
     @board[to_pos] = self
     @board[@pos] = nil

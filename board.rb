@@ -52,7 +52,11 @@ class Board
         if cell.nil?
           str = "  "
         else
-          str = cell.color == :red ? "🔴 " : "🔘 "
+          if cell.color == :red
+            str = "#{cell} ".red
+          else
+            str = "#{cell} ".white
+          end
         end
         
         if (x % 2 != y % 2)
