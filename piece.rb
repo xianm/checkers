@@ -25,6 +25,13 @@ class Piece
     perform_moves!(move_seq)
   end
 
+  def blocked?
+    has_slide_move = move_diffs.any? { |d| can_slide?([@pos.x + d.x, @pos.y + d.y]) }
+    has_jump_move = jump_diffs.any? { |d| can_jump?([@pos.x + d.x, @pos.y + d.y]) }
+    !(has_slide_move || has_jump_move)
+  end
+
+  protected
   def valid_move_seq?(move_seq)
     board_copy = @board.dup
     piece_copy = board_copy[@pos]
@@ -88,12 +95,6 @@ class Piece
 
     jump_diffs.include?([diff.x, diff.y]) && target.nil? &&
       !jumped.nil? && jumped.color != @color
-  end
-
-  def blocked?
-    has_slide_move = move_diffs.any? { |d| can_slide?([@pos.x + d.x, @pos.y + d.y]) }
-    has_jump_move = jump_diffs.any? { |d| can_jump?([@pos.x + d.x, @pos.y + d.y]) }
-    !(has_slide_move || has_jump_move)
   end
 
   def promote?
