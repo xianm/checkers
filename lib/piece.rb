@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class Piece
   FORWARD = [[1, 1], [-1, 1]]
   BACKWARD = [[1, -1], [-1, -1]]
